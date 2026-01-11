@@ -28,9 +28,9 @@ int value[socambien];
 int dem_ngaba = 0; // Biến lưu số lần gặp ngã 3
 
 // --- CHỈNH PID ---
-float kp = 35;  
+float kp = 40;  
 float ki = 0.002; 
-float kd = 1;  
+float kd = 8;  
 
 float setpoit = 0.0;
 float read_last_value = 0.0;
@@ -39,7 +39,7 @@ unsigned long last_timer = 0;
 float last_error = 0;
 float tichphan = 0;
 
-int tocdo = 175; // tang toc 2812
+int tocdo = 180; // tang toc 2812
 int tocdoc_max = 255; 
 
 // --- KHAI BÁO HÀM ---
@@ -100,10 +100,10 @@ void dieukhiendongco(){
   float distance = getDistance();
 
   // --- 1. ƯU TIÊN VẬT CẢN (< 20cm) ---
-  if (distance > 0 && distance < 20) {
+  if (distance > 0 && distance < 25) {
       digitalWrite(led, HIGH);
       stop(); delay(100); 
-      trai(180); delay(400); // Né
+      phai(180); delay(400); // Né
       tien(160, 160); delay(400);
       return; 
   }
@@ -120,13 +120,13 @@ void dieukhiendongco(){
 
       if (dem_ngaba == 3) {
           // LẦN THỨ 3: Rẽ theo hướng đó (Rẽ Trái)
-          trai(180); // Xoay tại chỗ
-          delay(400); // Chỉnh delay để quay đủ 90 độ
+          trai(110); // Xoay tại chỗ
+          delay(30); // Chỉnh delay để quay đủ 90 độ
           // Reset đếm nếu muốn chu trình lặp lại: dem_ngaba = 0;
       } else {
           // LẦN 1, 2: Đi thẳng qua ngã 3
-          tien(180, 180); 
-          delay(300); // QUAN TRỌNG: Đi mù một đoạn để thoát khỏi vạch ngang
+          tien(160, 160); 
+          delay(10); // QUAN TRỌNG: Đi mù một đoạn để thoát khỏi vạch ngang
       }
       return; // Xử lý xong, thoát hàm
   }
@@ -141,12 +141,12 @@ void dieukhiendongco(){
 
       if (dem_ngaba == 3) {
           // LẦN THỨ 3: Rẽ theo hướng đó (Rẽ Phải)
-          phai(180); // Xoay tại chỗ
-          delay(400); // Chỉnh delay để quay đủ 90 độ
+          phai(110); // Xoay tại chỗ
+          delay(30); // Chỉnh delay để quay đủ 90 độ
       } else {
           // LẦN 1, 2: Đi thẳng qua ngã 3
-          tien(180, 180); 
-          delay(300); // QUAN TRỌNG: Đi mù một đoạn để thoát khỏi vạch ngang
+          tien(160, 160); 
+          delay(10); // QUAN TRỌNG: Đi mù một đoạn để thoát khỏi vạch ngang
       }
       return; 
   }
@@ -253,16 +253,16 @@ void phanh_gap() {
   ledcWrite(PWM_CHANNEL_A, 255); 
   ledcWrite(PWM_CHANNEL_B, 255); 
   
-  delay(40); // Thời gian phanh (Tùy chỉnh: 30ms - 60ms)
+  delay(60); // Thời gian phanh (Tùy chỉnh: 30ms - 60ms)
              // Đủ để dừng nhưng không chạy lùi
   
   stop(); // Ngắt điện hoàn toàn
-  delay(20); // Dừng thêm 1 tí cho ổn định (tuỳ chọn)
+  delay(50); // Dừng thêm 1 tí cho ổn định (tuỳ chọn)
 }
 // HÀM RẼ PHẢI CHUẨN (Dùng cảm biến)
 void re_phai_90_do() {
   phai(200); 
-  delay(150); 
+  delay(60); 
   while(digitalRead(35) == 1) {
     // Chờ bắt line
   }
@@ -271,7 +271,7 @@ void re_phai_90_do() {
 // HÀM RẼ TRÁI CHUẨN (Dùng cảm biến)
 void re_trai_90_do() {
   trai(200); // Bắt đầu quay nhanh
-  delay(150); // Quay mù một đoạn để mắt giữa thoát khỏi line hiện tại
+  delay(60); // Quay mù một đoạn để mắt giữa thoát khỏi line hiện tại
   
   // Quay tiếp cho đến khi mắt giữa (value[2] - chân 35) gặp màu ĐEN (0)
   while(digitalRead(35) == 1) {
